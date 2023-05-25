@@ -1,0 +1,14 @@
+gtk-enable-animations=1
+gtk-primary-button-warps-slider=0
+gtk-toolbar-style=3
+gtk-menu-images=1
+gtk-button-images=1
+gtk-cursor-theme-size=24
+gtk-cursor-theme-name="Bibata-Modern-Ice"
+gtk-icon-theme-name="Colloid-purple-light"
+gtk-font-name="Google Sans,  13"
+# created by KDE Plasma, Sat Jun 18 17:41:40 2022
+#
+
+gtk-alternative-button-order = 1
+

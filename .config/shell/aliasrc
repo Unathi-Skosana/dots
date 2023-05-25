@@ -1,0 +1,93 @@
+#!/bin/sh
+
+# fasd
+alias \
+  a="fasd -a"  \
+  s="fasd -si" \
+  d="fasd -d"  \
+  f="fasd -f"  \
+  sd="fasd -sid" \
+  sf="fasd -sif" \
+  zz="fasd_cd -d" \
+  zzz="fasd_cd -d -i"
+
+# Verbosity and settings that you pretty much just always are going to want.
+alias \
+  cat="bat" \
+  cp="cp -iv" \
+  mv="mv -iv" \
+  rm="rm -vI" \
+  bc="bc -ql" \
+  mkd="mkdir -pv" \
+  yt="yt-dlp --embed-metadata -i" \
+  yta="yt -x -f bestaudio/best" \
+  ffmpeg="ffmpeg -hide_banner" \
+  v="nvim" \
+  c="clear" \
+  t="exa --tree -L 2"
+
+# notebooks
+alias \
+    zkt="zk new --title" \
+    zkl="zik list"
+
+# Colorize commands when possible.
+alias \
+  ls="ls -hN --color=auto --group-directories-first" \
+  diff="diff --color=auto" \
+  ccat="highlight --out-format=ansi" \
+  ip="ip -color=auto"
+
+# These common commands are just too long! Abbreviate them.
+alias \
+  b="buku --suggest" \
+  ka="killall" \
+  g="git" \
+  sdn="shutdown -h now" \
+  e="nvim" \
+  v="nvim" \
+  vim="nvim" \
+  p="pacman"
+
+alias \
+  weath="less -S ${XDG_DATA_HOME:-$HOME/.local/share}/weatherreport"
+
+# git commands
+alias \
+  gcot="git commit -m" \
+  ga="git add" \
+  gr="git rm -r --cached" \
+  gall="git add " \
+  gp="git push" \
+  gc="git commit -m" \
+  gam="git commit -mend" \
+  gre="git remote add" \
+  gst="git status" \
+  glog="git log" \
+  gcl="git clone"
+
+# pacman commands
+alias \
+  pac="pacman -S" \
+  pacu="pacman -Syu"\
+  pacr="pacman -Rs" \
+  pacs="pacman -Ss" \
+  paci="pacman -Si" \
+  paclo="pacman -Qdt" \
+  pacc="pacman -Scc" \
+  paclf="pacman -Ql"
+
+alias \
+  dots="/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME"
+
+#gcot="git commit -m" \
+#ga="git add" \
+#gr="git rm -r --cached" \
+#gall="git add " \
+#gp="git push" \
+#gc="git commit -m" \
+#gam="git commit -mend" \
+#gre="git remote add" \
+#gst="git status" \
+#glog="git log" \
+#gcl="git clone"

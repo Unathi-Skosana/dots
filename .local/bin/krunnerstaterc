@@ -1,0 +1,5 @@
+[PlasmaRunnerManager]
+LaunchCounts=1 exec:///usr/bin/anki,1 exec:///usr/bin/qpwgraph,2 exec:///opt/Evernote Beta/Evernote,21 exec:///usr/bin/kitty,2 exec:///usr/bin/dolphin,1 appstream_qspectrumanalyzer.desktop,3 exec:///usr/bin/konsole,1 browsertabs_725,2 exec:///usr/bin/spotify --uri=,1 exec:///usr/bin/google-chrome-stable,1 applications:telegramdesktop.desktop?action=Quit,4 exec:///usr/bin/spectacle,1 browsertabs_371,14 krunner_systemsettings,2 browserhistory_REQUEST_PERMISSION,2 exec:///usr/bin/latte-dock,1 file:///home/_delicht/yay-git/src/gopath/pkg/mod/github.com/!morganamilo/go-srcinfo@v1.0.0/testdata/srcinfos/good/vibrancy-colors,5 exec:///usr/bin/telegram-desktop --,1 exec:///usr/bin/redshift-gtk,1 appstream_org.kde.spectacle.desktop,8 exec:///usr/bin/systemsettings,1 org.kde.windowedwidgets_org.kde.plasma.webbrowser,1 places_baloosearch:/audio,2 exec:///usr/bin/dropbox
+
+[PlasmaRunnerManager][History]
+6cad2bc5-0ca6-4ca8-82a7-857547789b24=ki,drop,tele,anki,sp,spectr,ever,spo,sys

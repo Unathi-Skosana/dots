@@ -1,0 +1,14 @@
+#!/bin/bash
+
+DATE=$(date +%d-%m-%Y)
+BACKUP_DIR="/run/media/_delicht/1303F644789BB620/home-backups"
+
+# backup system configs
+sudo tar -zcvpf $BACKUP_DIR/sys-configs-$DATE.tar.gz /{etc/modprobe.d,etc/modules-load.d,etc/mkinitcpio.conf,boot/loader/entries,boot/loader/loader.conf}
+
+# only back up these folders
+tar --exclude='(.next|.tox|node_modules)' --exclude-vcs -zcvpf $BACKUP_DIR/home-$DATE.tar.gz /home/_delicht/{dl,dox,pix,src,tunes,vids,.fonts,.config,.local/bin,.gitignore,.gtkrc-2.0,.local,.mpd,.ncmpcpp,.npmrc,.nvidia-settings-rc,.nvm,.password-store,.pki,.pyenv,.qiskit,.rustup,.ssh,.taskrc,.Xauthority,.xprofile,.yarn,.yarnrc,.z,.zsh,.zshenv}
+
+
+# To delete files older than 15 days
+find $BACKUP_DIR/* -mtime +15 -exec rm {} \;

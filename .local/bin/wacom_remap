@@ -1,0 +1,12 @@
+#!/bin/sh
+
+MONITOR="DP1-2"
+PEN_NAME="Wacom Intuos BT S Pad pad"
+PAD_NAME="Wacom Intuos BT S Pen stylus"
+PEN_ID=$(xinput | grep "$PEN_NAME" | cut -f 2 | cut -c 4-5)
+PAD_ID=$(xinput | grep "$PAD_NAME" | cut -f 2 | cut -c 4-5)
+
+xinput map-to-output "$PEN_ID" "$MONITOR"
+xinput map-to-output "$PAD_ID" "$MONITOR"
+
+exit 0

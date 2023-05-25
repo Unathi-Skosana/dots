@@ -1,0 +1,12 @@
+#!/bin/bash
+
+pacman -Syy
+sync
+sh -c "echo 3 > /proc/sys/vm/drop_caches"
+updatedb
+yes | pacman -Sc
+yes | pacman -Rns $(pacman -Qtdq)
+yes | /usr/bin/python ~/.local/bin/rmshit.py
+
+exit 0
+
