@@ -1,39 +1,78 @@
-local status_ok, comment = pcall(require, 'Comment')
-if not status_ok then
-  return
-end
+-- File: plugins/comment.lua
+-- Description: nvim comment config
 
-local status_ok, comment_utils = pcall(require, 'Comment.utils')
-if not status_ok then
-  return
-end
+return { {
+  -- Smart and powerful comment plugin for neovim.
+  -- Supports treesitter, dot repeat, left-right/up-down motions, hooks, and more
+  "numToStr/Comment.nvim",
+  opts = {
+    active = true,
+    on_config_done = nil,
+    -- Add a space b/w comment and the line
+    -- @type boolean
+    padding = true,
 
+    -- Whether cursor should stay at the
+    -- same position. Only works in NORMAL
+    -- mode mappings
+    sticky = true,
 
-local status_ok, commentstring_utils = pcall(require, 'ts_context_commentstring.utils')
-if not status_ok then
-  return
-end
+    -- Lines to be ignored while comment/uncomment.
+    -- Could be a regex string or a function that returns a regex string.
+    -- Example: Use "^$" to ignore empty lines
+    -- @type string|function
+    ignore = "^$",
 
+    -- Whether to create basic (operator-pending) and extra mappings for NORMAL/VISUAL mode
+    -- @type table
+    mappings = {
+      -- operator-pending mapping
+      -- Includes `gcc`, `gcb`, `gc[count]{motion}` and `gb[count]{motion}`
+      basic = true,
+      -- Extra mapping
+      -- Includes `gco`, `gcO`, `gcA`
+      extra = true
+    },
 
-local status_ok, commentstring_internal = pcall(require, 'ts_context_commentstring.internal')
-if not status_ok then
-  return
-end
+    -- LHS of line and block comment toggle mapping in NORMAL/VISUAL mode
+    -- @type table
+    toggler = {
+      -- line-comment toggle
+      line = "mm",
+      -- block-comment toggle
+      block = "mbm"
+    },
 
-comment.setup({
-	pre_hook = function(ctx)
-		local U = comment_utils
+    -- LHS of line and block comment operator-mode mapping in NORMAL/VISUAL mode
+    -- @type table
+    opleader = {
+      -- line-comment opfunc mapping
+      line = "m",
+      -- block-comment opfunc mapping
+      block = "mb"
+    },
 
-		local location = nil
-		if ctx.ctype == U.ctype.block then
-			location = commentstring_utils.get_cursor_location()
-		elseif ctx.cmotion == U.cmotion.v or ctx.cmotion == U.cmotion.V then
-			location = commentstring_utils.get_visual_start_location()
-		end
+    -- LHS of extra mappings
+    -- @type table
+    extra = {
+      -- Add comment on the line above
+      above = "mO",
+      -- Add comment on the line below
+      below = "mo",
+      -- Add comment at the end of line
+      eol = "mA"
+    },
 
-		return commentstring_internal.calculate_commentstring({
-			key = ctx.ctype == U.ctype.line and "__default" or "__multiline",
-			location = location,
-		})
-	end,
-})
+    -- Pre-hook, called before commenting the line
+    -- @type function|nil
+    pre_hook = pre_hook,
+
+    -- Post-hook, called after commenting is done
+    -- @type function|nil
+    post_hook = nil
+  },
+  ---@param opts TSConfig
+  config = function(_, opts)
+    require("Comment").setup(opts)
+  end
+} }

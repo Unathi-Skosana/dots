@@ -1,51 +1,18 @@
-local status_ok, telescope = pcall(require, "telescope")
-if not status_ok then
-  return
-end
+-- File: plugins/telescope.lua
+-- Description: nvim-telescope config
 
-local status_ok, actions = pcall(require, "telescope.actions")
-if not status_ok then
-  return
-end
-
-telescope.setup({
-  defaults = {
-    file_ignore_patterns = {
-			".git/",
-			"node_modules/*",
-		},
-    mappings = {
-			i = {
-				["<C-j>"] = actions.move_selection_next,
-				["<C-k>"] = actions.move_selection_previous,
-				["<Tab>"] = actions.toggle_selection + actions.move_selection_worse,
-				["<S-Tab>"] = actions.toggle_selection + actions.move_selection_better,
-			},
-			n = {
-				["<Tab>"] = actions.toggle_selection + actions.move_selection_worse,
-				["<S-Tab>"] = actions.toggle_selection + actions.move_selection_better,
-			},
-		},
-	},
-
-  pickers = {
-    find_files = {
-      find_command = {
-        "fd",
-        "-HI",
-        "--type",
-        "file",
-        "--hidden",
-      }
-    }
-  },
-  extensions = {
-    fzy = {
-      override_generic_sorter = true, -- override the generic sorter
-      override_file_sorter = true, -- override the file sorter
-    }
-  }
-})
-
-telescope.load_extension("fzy_native")
-telescope.load_extension("project")
+return { -- Telescope
+  -- Find, Filter, Preview, Pick. All lua, all the time.
+  {
+    "nvim-telescope/telescope.nvim",
+    dependencies = { "nvim-lua/plenary.nvim", {
+      "nvim-telescope/telescope-fzf-native.nvim",
+      build = "make"
+    } },
+    config = function(_)
+      require("telescope").setup()
+      -- To get fzf loaded and working with telescope, you need to call
+      -- load_extension, somewhere after setup function:
+      require("telescope").load_extension("fzf")
+    end
+  } }

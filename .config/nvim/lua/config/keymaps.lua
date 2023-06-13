@@ -1,15 +1,21 @@
------------------------------------------------------------
--- Define keymaps of Neovim and installed plugins.
------------------------------------------------------------
+-- File: config/keymaps.lua
+-- Description: Define keymaps of Neovim and installed plugins.
 
 local map = vim.keymap.set
-
--- Change leader to a comma
-vim.g.mapleader = ' '
 
 -----------------------------------------------------------
 -- Neovim shortcuts
 -----------------------------------------------------------
+
+-- Close all windows and exit from Neovim with <leader> and q
+map("n", "<leader>q", ":qa!<CR>", {})
+-- Fast saving with <leader> and s
+map("n", "<leader>s", ":w<CR>", {})
+-- Move around splits
+map("n", "<leader>wh", "<C-w>h", {})
+map("n", "<leader>wj", "<C-w>j", {})
+map("n", "<leader>wk", "<C-w>k", {})
+map("n", "<leader>wl", "<C-w>l", {})
 
 -- Swap semicolons & Colons
 map("n", ";", ":")
@@ -25,7 +31,7 @@ map('', '<left>', '<nop>')
 map('', '<right>', '<nop>')
 
 -- Map Esc to kk
-map('i', 'kk', '<Esc>')
+-- map('i', 'kk', '<Esc>')
 
 -- Clear search highlighting with <leader> and c
 map('n', '<leader>c', ':nohl<CR>')
@@ -35,14 +41,13 @@ map('n', '<leader>tk', '<C-w>t<C-w>K') -- change vertical to horizontal
 map('n', '<leader>th', '<C-w>t<C-w>H') -- change horizontal to vertical
 
 -- Reload configuration without restart nvim
-map('n', '<leader>r', ':so %<CR>')
+map("n", "<leader>r", ":so %<CR>", {})
 
--- Reload file
+-- Reload currently opened file
 map('n', '<leader>e', ':e<CR>')
 
 -- Fast saving with <leader> and s
 map('n', '<leader>s', ':w<CR>')
-map('i', '<leader>s', '<C-c>:w<CR>')
 
 -- Close all windows and exit from Neovim with <leader> and q
 map('n', '<leader>q', ':qa!<CR>')
@@ -77,11 +82,19 @@ map("n", "<C-Right>", "<cmd>vertical resize +2<CR>", { desc = "Resize split righ
 map("n", "<leader>d", "<cmd>Alpha<cr>", { desc = "Alpha Dashboard" })
 
 -- Terminal mappings
-map('n', '<C-t>', ':Term<CR>', { noremap = true })  -- open
-map('t', '<Esc>', '<C-\\><C-n>')                    -- exit
+map('n', '<C-t>', ':Term<CR>', { noremap = true }) -- open
+map('t', '<Esc>', '<C-\\><C-n>')                   -- exit
+
+-- Telescope
+local builtin = require("telescope.builtin")
+map("n", "<leader>ff", builtin.find_files, {})
+map("n", "<leader>fg", builtin.live_grep, {})
+map("n", "<leader>fb", builtin.buffers, {})
+map("n", "<leader>fh", builtin.help_tags, {})
 
 -- Neotree
-map('n', '<C-n>', ':Neotree<CR>')            -- open/close
+-- open/close
+map('n', '<C-n>', ':Neotree<CR>')
 
 -- LSP Installer
 map("n", "<leader>li", "<cmd>LspInfo<cr>", { desc = "LSP information" })
@@ -91,16 +104,25 @@ map("n", "<leader>lI", "<cmd>LspInstallInfo<cr>", { desc = "LSP installer" })
 map("n", "<leader>lS", "<cmd>SymbolsOutline<cr>", { desc = "Symbols outline" })
 
 -- ZK
+
 -- Create a new note after asking for its title.
 map("n", "<leader>zn", "<Cmd>ZkNew { title = vim.fn.input('Title: ') }<CR>", opts)
 
 -- Open notes.
 map("n", "<leader>zo", "<Cmd>ZkNotes { sort = { 'modified' } }<CR>", opts)
+
 -- Open notes associated with the selected tags.
 map("n", "<leader>zt", "<Cmd>ZkTags<CR>", opts)
 
+-- Open notes associated with the selected tags.
+map("n", "<leader>zl", "<Cmd>ZkLinks<CR>", opts)
+
+-- Open notes associated with the selected tags.
+map("n", "<leader>zb", "<Cmd>ZkBacklinks<CR>", opts)
+
 -- Search for the notes matching a given query.
 map("n", "<leader>zf", "<Cmd>ZkNotes { sort = { 'modified' }, match = vim.fn.input('Search: ') }<CR>", opts)
+
 -- Search for the notes matching the current visual selection.
 map("v", "<leader>zf", ":'<,'>ZkMatch<CR>", opts)
 
@@ -118,11 +140,11 @@ map("n", "<leader>gp", function()
   require("gitsigns").preview_hunk()
 end, { desc = "Preview git hunk" })
 map("n", "<leader>gh", function()
-  require("gitsigns").reset_hunk()
-end, { desc = "Reset git hunk" })
+  require("gitsigns").r_hunk()
+end, { desc = "R git hunk" })
 map("n", "<leader>gr", function()
-  require("gitsigns").reset_buffer()
-end, { desc = "Reset git buffer" })
+  require("gitsigns").r_buffer()
+end, { desc = "R git buffer" })
 map("n", "<leader>gs", function()
   require("gitsigns").stage_hunk()
 end, { desc = "Stage git hunk" })
@@ -134,70 +156,6 @@ map("n", "<leader>gd", function()
 end, { desc = "View git diff" })
 
 
--- Telescope
-map("n", "<leader>fw", function()
-  require("telescope.builtin").live_grep()
-end, { desc = "Search words" })
-map("n", "<leader>gt", function()
-  require("telescope.builtin").git_status()
-end, { desc = "Git status" })
-map("n", "<leader>gb", function()
-  require("telescope.builtin").git_branches()
-end, { desc = "Git branchs" })
-map("n", "<leader>gc", function()
-  require("telescope.builtin").git_commits()
-end, { desc = "Git commits" })
-map("n", "<leader>ff", function()
-  require("telescope.builtin").find_files()
-end, { desc = "Search files" })
-map("n", "<leader>fb", function()
-  require("telescope.builtin").buffers()
-end, { desc = "Search buffers" })
-map("n", "<leader>fh", function()
-  require("telescope.builtin").help_tags()
-end, { desc = "Search help" })
-map("n", "<leader>fm", function()
-  require("telescope.builtin").marks()
-end, { desc = "Search marks" })
-map("n", "<leader>fo", function()
-  require("telescope.builtin").oldfiles()
-end, { desc = "Search history" })
-map("n", "<leader>sb", function()
-  require("telescope.builtin").git_branches()
-end, { desc = "Git branchs" })
-map("n", "<leader>sh", function()
-  require("telescope.builtin").help_tags()
-end, { desc = "Search help" })
-map("n", "<leader>sm", function()
-  require("telescope.builtin").man_pages()
-end, { desc = "Search man" })
-map("n", "<leader>sn", function()
-  require("telescope").extensions.notify.notify()
-end, { desc = "Search notifications" })
-map("n", "<leader>sr", function()
-  require("telescope.builtin").registers()
-end, { desc = "Search registers" })
-map("n", "<leader>sk", function()
-  require("telescope.builtin").keymaps()
-end, { desc = "Search keymaps" })
-map("n", "<leader>sc", function()
-  require("telescope.builtin").commands()
-end, { desc = "Search commands" })
-map("n", "<leader>ls", function()
-  local aerial_avail, _ = pcall(require, "aerial")
-  if aerial_avail then
-    require("telescope").extensions.aerial.aerial()
-  else
-    require("telescope.builtin").lsp_document_symbols()
-  end
-end, { desc = "Search symbols" })
-map("n", "<leader>lR", function()
-  require("telescope.builtin").lsp_references()
-end, { desc = "Search references" })
-map("n", "<leader>lD", function()
-  require("telescope.builtin").diagnostics()
-end, { desc = "Search diagnostics" })
-
 -- Trouble
 map("n", "<leader>xx", "<cmd>TroubleToggle<cr>")
 map("n", "<leader>xw", "<cmd>TroubleToggle lsp_workspace_diagnostics<cr>")
@@ -206,19 +164,7 @@ map("n", "<leader>xq", "<cmd>TroubleToggle quickfix<cr>")
 map("n", "<leader>xl", "<cmd>TroubleToggle loclist<cr>")
 map("n", "gR", "<cmd>TroubleToggle lsp_references<cr>")
 
--- Undo history
-map("n", "<leader>m", "<cmd>MundoToggle<cr>")
-
-
 -- Delete & navigate buffers
 map("n", "<leader>c", "<cmd>bdelete!<cr>", { desc = "Close buffer" })
 map("n", "<S-l>", "<cmd>bnext<cr>", { desc = "Next buffer" })
 map("n", "<S-h>", "<cmd>bprevious<cr>", { desc = "Previous buffer" })
-
-
--- Packer
-map("n", "<leader>pc", "<cmd>PackerCompile<cr>", { desc = "Packer Compile" })
-map("n", "<leader>pi", "<cmd>PackerInstall<cr>", { desc = "Packer Install" })
-map("n", "<leader>ps", "<cmd>PackerSync<cr>", { desc = "Packer Sync" })
-map("n", "<leader>pS", "<cmd>PackerStatus<cr>", { desc = "Packer Status" })
-map("n", "<leader>pu", "<cmd>PackerUpdate<cr>", { desc = "Packer Update" })

@@ -1,83 +1,60 @@
-local status_ok, treesitter = pcall(require, 'nvim-treesitter.configs')
-if not status_ok then
-  return
-end
+-- File: plugins/treesitter.lua
+-- Description: nvim-treesitter configuration
 
-treesitter.setup({
-		ensure_installed = {
-			"lua",
-			"markdown",
-			"html",
-			"css",
-			"javascript",
-			"typescript",
-			"tsx",
-			"prisma",
-			"json",
-			"c",
-			"python",
-			"graphql",
-			"yaml",
-			"toml",
-		},
-		highlight = {
-			enable = true,
-		},
-		rainbow = {
-			enable = true,
-			extended_mode = true,
-		},
-		autotag = {
-			enable = true,
-		},
-		indent = { enable = true },
-		textobjects = {
-			select = {
-				enable = true,
-				lookahead = true,
-				keymaps = {
-					["af"] = "@function.outer",
-					["if"] = "@function.inner",
-					["ac"] = "@class.outer",
-					["ic"] = { query = "@class.inner", desc = "Select inner part of a class region" },
-				},
-				selection_modes = {
-					["@parameter.outer"] = "v",
-					["@function.outer"] = "V",
-					["@class.outer"] = "<c-v>",
-				},
-				include_surrounding_whitespace = true,
-			},
-			swap = {
-				enable = true,
-				swap_next = {
-					["<leader>a"] = "@parameter.inner",
-				},
-				swap_previous = {
-					["<leader>A"] = "@parameter.inner",
-				},
-			},
-			move = {
-				enable = true,
-				set_jumps = true,
-				goto_next_start = {
-					["]m"] = "@function.outer",
-					["]]"] = "@class.outer",
-				},
-				goto_next_end = {
-					["]M"] = "@function.outer",
-					["]["] = "@class.outer",
-				},
-				goto_previous_start = {
-					["[m"] = "@function.outer",
-					["[["] = "@class.outer",
-				},
-				goto_previous_end = {
-					["[M"] = "@function.outer",
-					["[]"] = "@class.outer",
-				},
-			},
-		},
-	})
+return { -- Treesitter interface
+  {
+    "nvim-treesitter/nvim-treesitter",
+    version = false, -- last release is way too old and doesn"t work on Windows
+    build = ":TSUpdate",
+    dependencies = { {
+      "nvim-treesitter/nvim-treesitter-textobjects",
+      init = function()
+        -- PERF: no need to load the plugin, if we only need its queries for mini.ai
+        local plugin = require("lazy.core.config").spec.plugins["nvim-treesitter"]
+        local opts = require("lazy.core.plugin").values(plugin, "opts", false)
+        local enabled = false
+        if opts.textobjects then
+          for _, mod in ipairs({ "move", "select", "swap", "lsp_interop" }) do
+            if opts.textobjects[mod] and opts.textobjects[mod].enable then
+              enabled = true
+              break
+            end
+          end
+        end
+        if not enabled then
+          require("lazy.core.loader").disable_rtp_plugin("nvim-treesitter-textobjects")
+        end
+      end
+    } },
+    opts = {
+      -- A list of parser names, or "all"
+      ensure_installed = { "latex", "go", "python", "json", "yaml", "markdown", "html", "scss", "css", "vim" },
 
-	vim.cmd([[hi rainbowcol1 guifg=#7f849c]])
+      highlight = {
+        enable = true,
+        use_languagetree = true
+      },
+      indent = {
+        enable = true
+      },
+      autotag = {
+        enable = true
+      },
+      context_commentstring = {
+        enable = true,
+        enable_autocmd = false
+      },
+      refactor = {
+        highlight_definitions = {
+          enable = true
+        },
+        highlight_current_scope = {
+          enable = false
+        }
+      }
+    },
+    ---@param opts TSConfig
+    config = function(_, opts)
+      require("nvim-treesitter.configs").setup(opts)
+    end
+  } }
