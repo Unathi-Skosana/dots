@@ -3,7 +3,11 @@
 
 return { {
   "akinsho/bufferline.nvim",
-  options = {
+  version = "*",
+  dependencies = { {
+    "nvim-tree/nvim-web-devicons"
+  } },
+  opts = {
     buffer_close_icon = "",
     diagnostics = "nvim_lsp",
     diagnostics_indicator = function(_, level)
@@ -20,5 +24,10 @@ return { {
         padding = 2,
       },
     },
-  }
+  },
+  ---@param opts TSConfig
+  config = function(_, opts)
+    require("bufferline").setup(opts)
+  end
+
 } }
