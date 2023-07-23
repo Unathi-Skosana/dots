@@ -1,19 +1,9 @@
 #!/bin/sh
 
-# fasd
-alias \
-  a="fasd -a"  \
-  s="fasd -si" \
-  d="fasd -d"  \
-  f="fasd -f"  \
-  sd="fasd -sid" \
-  sf="fasd -sif" \
-  zz="fasd_cd -d" \
-  zzz="fasd_cd -d -i"
+# --- enable verbosity for common commands ---
 
-# Verbosity and settings that you pretty much just always are going to want.
+
 alias \
-  cat="bat" \
   cp="cp -iv" \
   mv="mv -iv" \
   rm="rm -vI" \
@@ -21,25 +11,20 @@ alias \
   mkd="mkdir -pv" \
   yt="yt-dlp --embed-metadata -i" \
   yta="yt -x -f bestaudio/best" \
-  ffmpeg="ffmpeg -hide_banner" \
-  v="nvim" \
-  c="clear" \
-  t="exa --tree -L 2"
+  ffmpeg="ffmpeg -hide_banner"
 
-# notebooks
-alias \
-    zkt="zk new --title" \
-    zkl="zik list"
 
-# Colorize commands when possible.
+# --- colorize commands when possible ---
 alias \
   ls="ls -hN --color=auto --group-directories-first" \
   diff="diff --color=auto" \
   ccat="highlight --out-format=ansi" \
   ip="ip -color=auto"
 
-# These common commands are just too long! Abbreviate them.
+
+# --- command abbreviations ---
 alias \
+  cat="bat" \
   b="buku --suggest" \
   ka="killall" \
   g="git" \
@@ -47,14 +32,15 @@ alias \
   e="nvim" \
   v="nvim" \
   vim="nvim" \
+  c="clear" \
+  t="exa --tree -L 2" \
   p="pacman"
 
-alias \
-  weath="less -S ${XDG_DATA_HOME:-$HOME/.local/share}/weatherreport"
 
-# git commands
+# --- git commands ---
+
 alias \
-  gcot="git commit -m" \
+  gcot="git commit" \
   ga="git add" \
   gr="git rm -r --cached" \
   gall="git add " \
@@ -66,7 +52,9 @@ alias \
   glog="git log" \
   gcl="git clone"
 
-# pacman commands
+
+# --- pacman commands ---
+
 alias \
   pac="pacman -S" \
   pacu="pacman -Syu"\
@@ -77,17 +65,41 @@ alias \
   pacc="pacman -Scc" \
   paclf="pacman -Ql"
 
+
+# --- dot files ---
+
 alias \
   dots="/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME"
 
-#gcot="git commit -m" \
-#ga="git add" \
-#gr="git rm -r --cached" \
-#gall="git add " \
-#gp="git push" \
-#gc="git commit -m" \
-#gam="git commit -mend" \
-#gre="git remote add" \
-#gst="git status" \
-#glog="git log" \
-#gcl="git clone"
+
+# --- lazy git ---
+
+alias \
+    lg="lazygit" \
+    lgd="lazygit --git-dir=$HOME/.dotfiles/ --work-tree=$HOME"
+
+
+# --- zk notebooks ---
+
+alias \
+    zkt="zk new --title" \
+    zkl="zik list"
+
+
+# --- tmux ---
+
+alias \
+  tmux='systemd-run --scope --user tmux' \
+  ta='tmux attach-session -t' \
+  tn='tmux new-session' \
+  tr='tmux rename-session -t' \
+  tl='tmux list-sessions'
+
+# --- moving around quickly ---
+
+alias \
+  sd="cd ~ && cd \$(fd . -t d | fzf)" \
+  cconf="cd ~ && cd \$(fd . '$XDG_CONFIG_HOME' -t d --hidden | fzf)" \
+  econf="cd ~ && nvim \$(fd . '$XDG_CONFIG_HOME' -t f --hidden | fzf)" \
+  ccode="cd ~ && cd \$(fd . '$HOME/src' -t d --hidden | fzf)" \
+  ecode="cd ~ && nvim \$(fd . '$HOME/src' -t f --hidden | fzf)"

@@ -1,0 +1,70 @@
+#!/bin/sh
+
+# --- export paths ---
+
+export PATH=$PATH:$HOME/.local/bin
+export PATH=$PATH:$HOME/.config/.spicetify
+export PATH=$PATH:$CARGO_HOME/bin
+
+
+# --- environment variables ---
+
+export EDITOR="nvim"
+export MANPAGER="nvim +Man!"
+export MANWIDTH=999
+export VISUAL="nvim"
+export JULIA_NUM_THREADS=8
+export TERMINAL="wezterm"
+export BROWSER="brave"
+export KEYTIMEOUT=1
+export HISTSIZE=10000000
+export SAVEHIST=10000000
+export NVM_LAZY_LOAD=true
+export NVM_COMPLETION=true
+export ANTIGEN_AUTO_CONFIG=false
+
+
+# --- environment variables for dirs ---
+
+export XDG_CONFIG_HOME="$HOME/.config"
+export XDG_CACHE_HOME="$HOME/.cache"
+export XDG_DATA_HOME="$HOME/.local/share"
+
+export XINITRC="$XDG_CONFIG_HOME/x11/xinitrc"
+export ZDOTDIR="$XDG_CONFIG_HOME/zsh"
+export GNUPGHOME="$XDG_DATA_HOME/gnupg"
+export CARGO_HOME="$XDG_DATA_HOME/cargo"
+export GOPATH="$XDG_DATA_HOME/go"
+export HISTFILE="$XDG_DATA_HOME/history"
+export GTK2_RC_FILES="$XDG_CONFIG_HOME/gtk-2.0/gtkrc-2.0"
+
+# --- program specific environments ---
+
+export DICS="/usr/share/stardict/dic/"
+export LESS=-R
+export LESS_TERMCAP_mb="$(printf '%b' '[1;31m')"
+export LESS_TERMCAP_md="$(printf '%b' '[1;36m')"
+export LESS_TERMCAP_me="$(printf '%b' '[0m')"
+export LESS_TERMCAP_so="$(printf '%b' '[01;44;33m')"
+export LESS_TERMCAP_se="$(printf '%b' '[0m')"
+export LESS_TERMCAP_us="$(printf '%b' '[1;32m')"
+export LESS_TERMCAP_ue="$(printf '%b' '[0m')"
+export LESSOPEN="| /usr/bin/highlight -O ansi %s 2>/dev/null"
+export LESSHISTFILE="-"
+export WGETRC="$XDG_CONFIG_HOME/wget/wgetrc"
+export ALSA_CONFIG_PATH="$XDG_CONFIG_HOME/alsa/asoundrc"
+export MYVIMRC="$XDG_CONFIG_HOME/nvim/init.lua"
+export TMUX_TMPDIR="$XDG_CONFIG_HOME/.tmp/tmux"
+export TEXMFHOME="$XDG_CONFIG_HOME/texmf"
+export NVM_DIR="$XDG_CONFIG_HOME/nvm"
+export PNPM_HOME="/home/_delicht/.local/share/pnpm"
+case ":$PATH:" in
+  *":$PNPM_HOME:"*) ;;
+  *) export PATH="$PNPM_HOME:$PATH" ;;
+esac
+
+
+# --- set up pyenv ---
+export PYENV_ROOT="$HOME/.pyenv"
+command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"
+eval "$(pyenv init -)"
