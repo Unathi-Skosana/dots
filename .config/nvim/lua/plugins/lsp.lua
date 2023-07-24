@@ -122,6 +122,7 @@ return { -- LSP - Quickstart configs for Nvim LSP
               nvim_lua = '🌙',
               path = '怒',
               treesitter = '🌴',
+              copilot = '🤖'
             })[entry.source.name]
             return kind
           end,
@@ -137,6 +138,7 @@ return { -- LSP - Quickstart configs for Nvim LSP
           { name = 'nvim_lsp_signature_help' },
           { name = 'treesitter' },
           { name = "luasnip" },
+          { name = "copilot" },
           { name = "path" },
           {
             name = "buffer",
@@ -183,7 +185,10 @@ return { -- LSP - Quickstart configs for Nvim LSP
         dockerls = {},
         bashls = {},
         gopls = {},
-        pyright = {},
+        pyright = {
+          disableLanguageServices = false,
+          disableOrganizeImports = true
+        },
         vimls = {},
         yamlls = {},
         ltex = {}
@@ -269,12 +274,12 @@ return { -- LSP - Quickstart configs for Nvim LSP
 
       null_ls.setup({
         debug = false,
+        root_dir = require("null-ls.utils").root_pattern(".git", "package.json"),
         sources = { formatting.prettier.with {
           extra_filetypes = { "toml" },
-          extra_args = { "--no-semi", "--single-quote", "--jsx-single-quote" }
         }, formatting.black.with {
           extra_args = { "--fast" }
-        }, formatting.stylua, formatting.google_java_format, diagnostics.flake8 }
+        }, formatting.stylua, diagnostics.flake8 }
       })
     end
   } }
