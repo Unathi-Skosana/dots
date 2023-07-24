@@ -41,7 +41,7 @@ map('n', '<leader>tk', '<C-w>t<C-w>K') -- change vertical to horizontal
 map('n', '<leader>th', '<C-w>t<C-w>H') -- change horizontal to vertical
 
 -- Reload configuration without restart nvim
-map("n", "<leader>r", ":so %<CR>", {})
+map("n", "<leader>r", ":source $MYVIMRC<CR>")
 
 -- Reload currently opened file
 map('n', '<leader>e', ':e<CR>')
@@ -56,14 +56,6 @@ map('n', '<leader>q', ':qa!<CR>')
 map("v", "<", "<gv", { desc = "unindent line" })
 map("v", ">", ">gv", { desc = "indent line" })
 
--- Improved Terminal Mappings
-map("t", "<esc>", "<C-\\><C-n>", { desc = "Terminal normal mode" })
-map("t", "jk", "<C-\\><C-n>", { desc = "Terminal normal mode" })
-map("t", "<C-h>", "<c-\\><c-n><c-w>h", { desc = "Terminal left window navigation" })
-map("t", "<C-j>", "<c-\\><c-n><c-w>j", { desc = "Terminal down window navigation" })
-map("t", "<C-k>", "<c-\\><c-n><c-w>k", { desc = "Terminal up window navigation" })
-map("t", "<C-l>", "<c-\\><c-n><c-w>l", { desc = "Terminal right window naviation" })
-
 -- Smart Splits
 map("n", "<C-h>", "<C-w>h", { desc = "Move to left split" })
 map("n", "<C-j>", "<C-w>j", { desc = "Move to below split" })
@@ -77,13 +69,6 @@ map("n", "<C-Right>", "<cmd>vertical resize +2<CR>", { desc = "Resize split righ
 -----------------------------------------------------------
 -- Applications and Plugins shortcuts
 -----------------------------------------------------------
-
--- Alpha
-map("n", "<leader>d", "<cmd>Alpha<cr>", { desc = "Alpha Dashboard" })
-
--- Terminal mappings
-map('n', '<C-t>', ':Term<CR>', { noremap = true }) -- open
-map('t', '<Esc>', '<C-\\><C-n>')                   -- exit
 
 -- Telescope
 local builtin = require("telescope.builtin")
