@@ -13,6 +13,7 @@ return { -- Statusline
       function loadcolors()
         -- Rose-pine palette
         local rosepine = require("rose-pine.palette")
+
         local colors = {
           bg = rosepine.base,
           fg = rosepine.text,
@@ -24,53 +25,6 @@ return { -- Statusline
           magenta = rosepine.iris,
           blue = rosepine.rose,
           red = rosepine.love
-        }
-
-        -- Try to load pywal colors
-        local modules = lualine_require.lazy_require {
-          utils_notices = "lualine.utils.notices"
-        }
-        local sep = package.config:sub(1, 1)
-        local wal_colors_path = table.concat({ os.getenv("HOME"), ".cache", "wal", "colors.sh" }, sep)
-        local wal_colors_file = io.open(wal_colors_path, "r")
-
-        if wal_colors_file == nil then
-          modules.utils_notices.add_notice("lualine.nvim: " .. wal_colors_path .. " not found")
-          return colors
-        end
-
-        local ok, wal_colors_text = pcall(wal_colors_file.read, wal_colors_file, "*a")
-        wal_colors_file:close()
-
-        if not ok then
-          modules.utils_notices.add_notice("lualine.nvim: " .. wal_colors_path .. " could not be read: " ..
-            wal_colors_text)
-          return colors
-        end
-
-        local wal = {}
-
-        for line in vim.gsplit(wal_colors_text, "\n") do
-          if line:match("^[a-z0-9]+='#[a-fA-F0-9]+'$") ~= nil then
-            local i = line:find("=")
-            local key = line:sub(0, i - 1)
-            local value = line:sub(i + 2, #line - 1)
-            wal[key] = value
-          end
-        end
-
-        -- Color table for highlights
-        colors = {
-          bg = wal.background,
-          fg = wal.foreground,
-          yellow = wal.color3,
-          cyan = wal.color4,
-          black = wal.color0,
-          green = wal.color2,
-          white = wal.color7,
-          magenta = wal.color5,
-          blue = wal.color6,
-          red = wal.color1
         }
 
         return colors
@@ -92,30 +46,62 @@ return { -- Statusline
         end
       }
 
+
+      -- Custom mode names.
+      local mode_map = {
+        ['COMMAND'] = 'COMMND',
+        ['V-BLOCK'] = 'V-BLCK',
+        ['TERMINAL'] = 'TERMNL',
+      }
+      local function fmt_mode(s) return mode_map[s] or s end
+
+      local function parent_folder()
+        local current_buffer = vim.api.nvim_get_current_buf()
+        local current_file = vim.api.nvim_buf_get_name(current_buffer)
+        local parent = vim.fn.fnamemodify(current_file, ':h:t')
+        if parent == '.' then return '' end
+        return parent .. '/'
+      end
+
+      -- Get the buffer's filename.
+      local function get_current_filename()
+        local bufname = vim.api.nvim_buf_get_name(0)
+        return bufname ~= '' and vim.fn.fnamemodify(bufname, ':t') or ''
+      end
+
+      local function copilot_normal()
+        local status = require('copilot.api').status.data.status
+        if
+            string.find(status, 'Online')
+            or string.find(status, 'Enabled')
+            or string.find(status, 'Normal')
+            or string.find(status, 'InProgress')
+        then
+          return '  '
+        end
+        return ''
+      end
+
+      local function copilot_warn()
+        local status = require('copilot.api').status.data.status
+        if string.find(status, 'Warning') then return '  ' end
+        return ''
+      end
+
+      local function copilot_error()
+        local status = require('copilot.api').status.data.status
+        if string.find(status, 'Error') then return '  ' end
+        return ''
+      end
+
       -- Config
       local config = {
         options = {
           -- Disable sections and component separators
           component_separators = "",
           section_separators = "",
-          disabled_filetypes = { "packer", "NvimTree" },
-          theme = {
-            -- We are going to use lualine_c an lualine_x as left and
-            -- right section. Both are highlighted by c theme .  So we
-            -- are just setting default looks o statusline
-            normal = {
-              c = {
-                fg = colors.fg,
-                bg = colors.bg
-              }
-            },
-            inactive = {
-              c = {
-                fg = colors.fg,
-                bg = colors.bg
-              }
-            }
-          }
+          disabled_filetypes = { "Lazy", "NvimTree" },
+          theme = require("zenbones.util").get_lualine_theme "zenwritten"
         },
         sections = {
           -- these are to remove the defaults
@@ -149,55 +135,46 @@ return { -- Statusline
       end
 
       ins_left {
-        -- mode component
-        function()
-          return ""
-        end,
-        color = function()
-          -- auto change color according to neovims mode
-          local mode_color = {
-            n = colors.red,
-            i = colors.green,
-            v = colors.blue,
-            [""] = colors.blue,
-            V = colors.blue,
-            c = colors.magenta,
-            no = colors.red,
-            s = colors.yellow,
-            S = colors.yellow,
-            [""] = colors.yellow,
-            ic = colors.yellow,
-            R = colors.white,
-            Rv = colors.white,
-            cv = colors.red,
-            ce = colors.red,
-            r = colors.cyan,
-            rm = colors.cyan,
-            ["r?"] = colors.cyan,
-            ["!"] = colors.red,
-            t = colors.red
-          }
-          return {
-            fg = mode_color[vim.fn.mode()]
-          }
-        end
-      }
-
-      ins_left {
-        "filename",
-        cond = conditions.buffer_not_empty,
+        'mode',
+        fmt = fmt_mode,
+        icon = { '' },
+        right_padding = 2,
+        separator = {
+          right = '',
+          left = '',
+        },
         color = {
-          fg = colors.magenta,
-          gui = "bold"
+          fg = colors.bg,
+          bg = colors.yellow
         }
       }
 
       ins_left {
+        parent_folder,
+        icon = { '  ' },
+        cond = conditions.buffer_not_empty,
+        separator = '',
+        padding = 0,
+        color = {
+          fg = colors.black,
+        }
+      }
+
+      ins_left {
+        get_current_filename,
+        separator = ' ',
+        padding = 0,
+        color = {
+          fg = colors.black,
+        }
+      }
+
+
+      ins_left {
         "branch",
-        icon = "",
+        icon = '   ',
         color = {
           fg = colors.blue,
-          gui = "bold"
         }
       }
 
@@ -205,9 +182,9 @@ return { -- Statusline
         "diff",
         -- Is it me or the symbol for modified us really weird
         symbols = {
-          added = " ",
-          modified = " ",
-          removed = " "
+          added = " ",
+          modified = " ",
+          removed = " "
         },
         diff_color = {
           added = {
@@ -230,6 +207,31 @@ return { -- Statusline
       end }
 
       ins_right {
+        "diagnostics",
+        sources = { "nvim_diagnostic" },
+        symbols = {
+          error = " ",
+          warn = " ",
+          info = " ",
+        },
+        diagnostics_color = {
+          color_error = {
+            fg = colors.red
+          },
+          color_warn = {
+            fg = colors.yellow
+          },
+          color_info = {
+            fg = colors.green
+          }
+        },
+        colored = true,
+        padding = 1
+      }
+
+
+
+      ins_right {
         -- Lsp server name .
         function()
           local msg = "null"
@@ -246,68 +248,47 @@ return { -- Statusline
           end
           return msg
         end,
-        icon = " LSP:",
+        icon = " ",
+        padding = 2,
+        separator = ' ',
         color = {
-          fg = colors.cyan,
-          gui = "bold"
+          fg = colors.black,
         }
       }
 
       ins_right {
-        "diagnostics",
-        sources = { "nvim_diagnostic" },
-        symbols = {
-          error = " ",
-          warn = " ",
-          info = " "
-        },
-        diagnostics_color = {
-          color_error = {
-            fg = colors.red
-          },
-          color_warn = {
-            fg = colors.yellow
-          },
-          color_info = {
-            fg = colors.cyan
-          }
-        },
-        always_visible = true
+        copilot_normal,
+        padding = 0
       }
 
       ins_right {
-        "o:encoding", -- option component same as &encoding in viml
-        fmt = string.upper,
-        cond = conditions.hide_in_width,
-        color = {
-          fg = colors.green,
-          gui = "bold"
-        }
+        copilot_warn,
+        padding = 0
       }
 
       ins_right {
-        "fileformat",
-        fmt = string.upper,
-        icons_enabled = false,
-        color = {
-          fg = colors.green,
-          gui = "bold"
-        }
+        copilot_error,
+        padding = 0
       }
 
       ins_right {
         "location",
+        icon = { '', align = 'left' },
+        separator = { left = '' },
         color = {
-          fg = colors.fg,
-          gui = "bold"
+          fg = colors.bg,
+          bg = colors.yellow
         }
       }
 
       ins_right {
         "progress",
+        icon = { '', align = 'left' },
+        separator = { right = '' },
+        left_padding = 2,
         color = {
-          fg = colors.fg,
-          gui = "bold"
+          fg = colors.bg,
+          bg = colors.yellow
         }
       }
 
