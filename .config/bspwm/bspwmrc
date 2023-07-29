@@ -1,0 +1,132 @@
+#!/bin/sh
+
+# monitors
+
+INTERNAL_MONITOR="eDP-1"
+EXTERNAL_MONITOR_0="DP-1-1"
+EXTERNAL_MONITOR_1="DP-1-2"
+
+
+# check if monitors are connected
+
+MON_0_CONN=$(xrandr -q | grep "${EXTERNAL_MONITOR_0} connected")
+MON_1_CONN=$(xrandr -q | grep "${EXTERNAL_MONITOR_1} connected")
+
+
+# on first load setup default workspaces
+
+if [[ "$1" = 0 ]]; then
+    if [ "$MON_0_CONN" ] && [ "$MON_1_CONN" ]; then
+        bspc monitor "$INTERNAL_MONITOR"   -d 1 2 3
+        bspc monitor "$EXTERNAL_MONITOR_0" -d 4 5 6
+        bspc monitor "$EXTERNAL_MONITOR_1" -d 7 8 9
+        bspc wm -O "$INTERNAL_MONITOR" "$EXTERNAL_MONITOR_0" "$EXTERNAL_MONITOR_1"
+    else
+        bspc monitor "$INTERNAL_MONITOR" -d 1 2 3 4 5 6 7 8 9 10
+    fi
+fi
+
+
+# help function
+
+_run() {
+	if ! pgrep -x "${1}" &>/dev/null; then
+		"$@" &
+	fi
+}
+
+
+# Monitor setup
+
+sh $XDG_CONFIG_HOME/bspwm/setup &
+
+# Polkit
+
+_run polkit-gnome-authentication-agent-1
+
+
+# Sxhkd
+
+_run sxhkd -c $XDG_CONFIG_HOME/sxhkd/sxhkdrc
+
+
+# Network Manager
+
+_run nm-applet
+
+
+# Power Manager
+
+_run xfce4-power-manager
+
+
+# Notifications
+
+_run dunst --config $XDG_CONFIG_HOME/dunst/dunstrc
+
+
+# Compositor
+
+_run picom -b --config $XDG_CONFIG_HOME/picom/picom.conf --experimental-backends --vsync
+
+
+# Remap caps to escape
+
+_run setxkbmap -option caps:escape
+
+
+# Fix Cursor
+
+_run xsetroot -cursor_name left_ptr
+
+
+# --- Workspaces ---
+
+# Aliases
+alias bc='bspc config'
+alias br='bspc rule'
+
+
+# Config
+
+bc border_radius 15
+bc top_padding 30
+bc bottom_padding 0
+bc border_width 0
+bc bottom_padding 0
+bc window_gap 10
+bc split_ratio 0.50
+bc focused_border_color "#f7768e"
+bc normal_border_color "#353b45"
+bc borderless_monocle true
+bc gapless_monocle false
+bc focus_follows_pointer true
+bc paddingless_monocle true
+bc single_monocle false
+
+
+# Rules
+
+br -a feh state=floating
+br -a sxiv state=floating
+br -a mpv state=floating
+br -a flameshot state=floating
+
+
+br -a brave-brownser follow=on focus=on desktop='^2'
+
+
+br -a pomatez state=floating follow=on focus=on desktop='^3'
+br -a mathpix-snipping-tool state=floating follow=on focus=on desktop='^3'
+
+
+br -a zathura state=tiled follow=on focus=on desktop='^6'
+
+
+br -a telegram state=follow=on focus=on desktop='^7'
+br -a discord follow=on focus=on desktop='^7'
+
+
+br -a pavucontrol state=floating follow=on focus=on dekstop='^8'
+br -a Lxappearance state=floating desktop='^8'
+br -a KeePassXC state=floating follow=on focus=on desktop='^8'

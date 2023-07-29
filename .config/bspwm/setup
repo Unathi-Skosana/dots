@@ -1,0 +1,69 @@
+#!/bin/sh
+
+INTERNAL_MONITOR="eDP-1"
+EXTERNAL_MONITOR_0="DP-1-1"
+EXTERNAL_MONITOR_1="DP-1-2"
+MON_0_CONN=$(xrandr -q | grep "${EXTERNAL_MONITOR_0} connected")
+MON_1_CONN=$(xrandr -q | grep "${EXTERNAL_MONITOR_1} connected")
+
+_run() {
+	if ! pgrep -x "${1}" &>/dev/null; then
+		"$@" &
+	fi
+}
+
+monitor_add() {
+	# Move first 6 desktops to external monitors
+    for ((desktop = 4; desktop < 7; desktop++)); do
+		bspc desktop "$desktop" --to-monitor "$EXTERNAL_MONITOR_0"
+	done
+
+    for ((desktop = 7; desktop < 10; desktop++)); do
+		bspc desktop "$desktop" --to-monitor "$EXTERNAL_MONITOR_1"
+	done
+
+	# Remove default desktop created by bspwm
+	bspc desktop 10 --remove
+
+	# reorder monitors
+    bspc wm -O "$INTERNAL_MONITOR" "$EXTERNAL_MONITOR_0" "$EXTERNAL_MONITOR_1"
+}
+
+monitor_remove() {
+	# Add default temp desktop because a minimum of one desktop is required per monitor
+    bspc monitor "$EXTERNAL_MONITOR_0" -a 10
+
+	# Move all desktops except the last default desktop to internal monitor
+	for desktop in $(bspc query -D -m "$EXTERNAL_MONITOR_0"); do
+		bspc desktop "$desktop" --to-monitor "$INTERNAL_MONITOR"
+	done
+
+    # delete default desktops
+	bspc desktop 10 --remove
+
+	bspc monitor "$EXTERNAL_MONITOR_1" -a 10
+
+    # Move all desktops except the last default desktop to internal monitor
+	for desktop in $(bspc query -D -m "$EXTERNAL_MONITOR_1"); do
+		bspc desktop "$desktop" --to-monitor "$INTERNAL_MONITOR"
+	done
+
+    # delete default desktops
+	bspc desktop 10 --remove
+
+	# reorder desktops
+	bspc monitor "$INTERNAL_MONITOR" -o 1 2 3 4 5 6 7 8 9 10
+}
+
+if [ "$MON_0_CONN" ] && [ "$MON_1_CONN" ]; then
+	monitor_add
+else
+	monitor_remove
+fi
+
+
+# Background
+_run hsetroot -cover ~/pix/wallpapers/misc/feet-on-the-dashboard.png
+
+# Polybar
+_run $XDG_CONFIG_HOME/polybar/launch.sh
