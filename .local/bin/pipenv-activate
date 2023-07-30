@@ -1,0 +1,33 @@
+#!/bin/sh
+
+# activates a virtualenv managed by pipenv in the current directory
+
+# set up
+path="$HOME/.local/share/virtualenvs"
+venv_paths=("$path"/*)
+venv_short_paths=("$path"/*)
+
+for (( i=0; i<${#venv_paths[@]}; i++ )); do
+    full_path=$(cat "${venv_paths[i]}"/.project | sed "s/\(.*\)/\1/")
+    short_file_path="${full_path}"
+    short_file_path="${short_file_path##*/}"
+    venv_short_paths[i]="${short_file_path}"
+done
+
+# select venv
+sel_venv=$(printf "%s\n" "${venv_short_paths[@]}" | fzf)
+
+# exit if nothing selected
+if [ -z "$sel_venv" ]; then
+    exit 0
+fi
+
+# get index of selected venv
+for i in "${!venv_short_paths[@]}"; do
+   [[ "${venv_short_paths[$i]}" = "${sel_venv}" ]] && break
+done
+
+# change directory into venv bin, source it, return to previous directory, and spawn new shell
+cd $(printf '%s' "${venv_paths[i]}") && source bin/activate
+cd "$OLDPWD"
+$SHELL
