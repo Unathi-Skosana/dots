@@ -4,3 +4,4 @@ Dotfiles for:
 * neovim
 * wezterm
 * tmux
+* bspwm
