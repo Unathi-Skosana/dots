@@ -9,6 +9,7 @@ git:
     pager: delta --paging=never --side-by-side
 
 gui:
+  border: 'rounded'
   authorColors:
     'Unathi-Skosana': blue
     '*': magenta

@@ -6,11 +6,13 @@
 
 [core]
     pager = delta
+    untrackedCache = true
 
 [interactive]
     diffFilter = delta --color-only
 
 [delta]
+    true-color = always
     navigate = true    # use n and N to move between diff sections
     light = false      # set to true if you're in a terminal w/ a light background color (e.g. the default macOS terminal)
     side-by-side = true
@@ -20,3 +22,21 @@
 
 [diff]
     colorMoved = default
+
+[delta]
+  features                  = decorations
+  line-numbers-left-format  = ""
+  line-numbers-right-format = "│ "
+  syntax-theme              = none
+
+[delta "decorations"]
+  commit-style                 = 3          # Yellow
+  file-decoration-style        = 11 ul ol
+  file-style                   = 11         # Bold yellow
+  hunk-header-decoration-style = 4 box      # Blue
+  hunk-header-style            = 253        # White
+  minus-emph-style             = 1 reverse
+  minus-style                  = 1          # Red
+  plus-emph-style              = 2 reverse
+  plus-style                   = 2          # Green
+  zero-style                   = auto

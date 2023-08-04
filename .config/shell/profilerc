@@ -1,10 +1,4 @@
-#!/bin/sh
-
-# --- export paths ---
-
-export PATH=$PATH:$HOME/.local/bin
-export PATH=$PATH:$HOME/.config/.spicetify
-export PATH=$PATH:$CARGO_HOME/bin
+#!/bin/bash
 
 
 # --- environment variables ---
@@ -62,7 +56,18 @@ case ":$PATH:" in
   *":$PNPM_HOME:"*) ;;
   *) export PATH="$PNPM_HOME:$PATH" ;;
 esac
+export FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS \
+    --color=fg:#8e8e8e,bg:#191919,hl:#6099c0 \
+    --color=fg+:#bbbbbb,bg+:#191919,hl+:#61abda \
+    --color=info:#b77e64,prompt:#de6e7c,pointer:#b77e64 \
+    --color=marker:#d68c67,spinner:#e8838f,header:#8e8e8e
+"
 
+# --- export paths ---
+
+export PATH=$PATH:$HOME/.local/bin
+export PATH=$PATH:$HOME/.config/.spicetify
+export PATH=$PATH:$CARGO_HOME/bin
 
 # --- set up pyenv ---
 export PYENV_ROOT="$HOME/.pyenv"
