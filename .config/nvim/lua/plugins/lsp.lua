@@ -5,7 +5,6 @@
 return { -- LSP - Quickstart configs for Nvim LSP
   {
     "L3MON4D3/LuaSnip",
-    version      = '1',
     dependencies = {
       {
         "rafamadriz/friendly-snippets"
@@ -15,17 +14,16 @@ return { -- LSP - Quickstart configs for Nvim LSP
       require 'luasnip'.config.setup {
         history = true,
         native_menu = true,
-        updateevents = 'TextChanged,TextChangedI',
         enable_autosnippets = true,
-        --ft_func = require 'luasnip.extras.filetype_functions'.from_pos_or_filetype,
-        load_ft_func = require 'luasnip.extras.filetype_functions'.extend_load_ft {
-          latex = { 'markdown' },
-          markdown = { 'lua', 'latex', 'json', 'html', 'yaml', 'css', 'typescript', 'javascript' },
-          html = { 'javascript', 'css', 'graphql', 'json' },
-          javascript = { 'html', 'css', 'graphql' },
-          typescript = { 'html', 'css', 'graphql' },
-        },
+        updateevents = 'TextChanged,TextChangedI',
       }
+
+
+      require("luasnip").filetype_extend("markdown",
+        { 'tex', 'lua', 'tex', 'json', 'html', 'yaml', 'css', 'typescript', 'javascript' })
+      require("luasnip").filetype_extend("html", { 'css', 'javascript', json })
+      require("luasnip").filetype_extend("javascript", { 'html', 'json', 'css' })
+      require("luasnip").filetype_extend("typescript", { 'html', 'json', 'css' })
 
       require 'luasnip.loaders.from_lua'.lazy_load()
       require 'luasnip.loaders.from_vscode'.lazy_load()
@@ -170,7 +168,7 @@ return { -- LSP - Quickstart configs for Nvim LSP
     },
     opts = {
       -- Automatically format on save
-      autoformat = true,
+      autoformat = false,
       -- options for vim.lsp.buf.format
       -- `bufnr` and `filter` is handled by the LazyVim formatter,
       -- but can be also overridden when specified
@@ -185,10 +183,7 @@ return { -- LSP - Quickstart configs for Nvim LSP
         dockerls = {},
         bashls = {},
         gopls = {},
-        pyright = {
-          disableLanguageServices = false,
-          disableOrganizeImports = true
-        },
+        pylsp = {},
         vimls = {},
         yamlls = {},
         ltex = {}
@@ -204,6 +199,33 @@ return { -- LSP - Quickstart configs for Nvim LSP
         -- end,
         -- Specify * to use this function as a fallback for any server
         -- ["*"] = function(server, opts) end,
+        pylsp = function(_, opts)
+          require("lspconfig").pylsp.setup {
+            settings = {
+              pylsp = {
+                plugins = {
+                  -- formatter options
+                  black = { enabled = true },
+                  autopep8 = { enabled = false },
+                  yapf = { enabled = false },
+
+                  -- linter options
+                  pylint = { enabled = true },
+                  pyflakes = { enabled = false },
+                  pycodestyle = { enabled = false },
+
+                  -- type checker
+                  pylsp_mypy = { enabled = true },
+                  -- auto-completion options
+                  jedi_completion = { fuzzy = true },
+                  -- import sorting
+                  pyls_isort = { enabled = false },
+                }
+              }
+            }
+          }
+          return true
+        end
       }
     },
     ---@param opts Opts
@@ -275,11 +297,13 @@ return { -- LSP - Quickstart configs for Nvim LSP
       null_ls.setup({
         debug = false,
         root_dir = require("null-ls.utils").root_pattern(".git", "package.json"),
-        sources = { formatting.prettier.with {
-          extra_filetypes = { "toml" },
-        }, formatting.black.with {
-          extra_args = { "--fast" }
-        }, formatting.stylua, diagnostics.flake8 }
+        sources = {
+          formatting.prettier.with { extra_filetypes = { "toml" } },
+          formatting.black.with { extra_args = { "--fast" } },
+          formatting.stylua,
+          diagnostics.flake8
+        }
       })
     end
-  } }
+  }
+}
