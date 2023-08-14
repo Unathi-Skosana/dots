@@ -69,8 +69,19 @@ alias \
 # --- dot files ---
 
 alias \
-  dots="/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME"
-
+  dots="git --git-dir=$HOME/.cfg/ --work-tree=$HOME"
+  gdcot="git --git-dir=$HOME/.cfg/  commit" \
+  gda="git --git-dir=$HOME/.cfg/  add" \
+  gdr="git --git-dir=$HOME/.cfg/  rm -r --cached" \
+  gdall="git --git-dir=$HOME/.cfg/  add " \
+  gdp="git --git-dir=$HOME/.cfg/  push" \
+  gdc="git --git-dir=$HOME/.cfg/  commit -m" \
+  gdam="git --git-dir=$HOME/.cfg/  commit --amend" \
+  gdre="git --git-dir=$HOME/.cfg/  remote add" \
+  gdst="git --git-dir=$HOME/.cfg/  status" \
+  gdlog="git --git-dir=$HOME/.cfg/  log" \
+  gdcl="git --git-dir=$HOME/.cfg/  clone"
+#squash="git reset --soft HEAD~1 && git commit --edit -m"$(git log --format=%B --reverse HEAD..HEAD@{1})\""
 
 # --- lazy git ---
 
@@ -84,6 +95,7 @@ alias \
 alias \
     zkt="zk new --title" \
     zkl="zik list"
+
 
 
 # --- tmux ---
