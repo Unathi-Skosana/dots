@@ -5,16 +5,15 @@
 INTERNAL_MONITOR="eDP-1"
 EXTERNAL_MONITOR_0="DP-1-1"
 EXTERNAL_MONITOR_1="DP-1-2"
-
+EXTERNAL_MONITOR_2="DP-2"
 
 # check if monitors are connected
 
 MON_0_CONN=$(xrandr -q | grep "${EXTERNAL_MONITOR_0} connected")
 MON_1_CONN=$(xrandr -q | grep "${EXTERNAL_MONITOR_1} connected")
-
+MON_2_CONN=$(xrandr -q | grep "${EXTERNAL_MONITOR_2} connected")
 
 # on first load setup default workspaces
-
 if [[ "$1" = 0 ]]; then
     if [ "$MON_0_CONN" ] && [ "$MON_1_CONN" ]; then
         bspc monitor "$INTERNAL_MONITOR"   -d 1 2 3
@@ -42,17 +41,13 @@ sh $XDG_CONFIG_HOME/bspwm/setup &
 
 # Polkit
 
-_run polkit-gnome-authentication-agent-1
+_run /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
 
 
 # Sxhkd
 
 _run sxhkd -c $XDG_CONFIG_HOME/sxhkd/sxhkdrc
 
-
-# Network Manager
-
-_run nm-applet
 
 
 # Power Manager
@@ -78,6 +73,11 @@ _run setxkbmap -option caps:escape
 # Fix Cursor
 
 _run xsetroot -cursor_name left_ptr
+
+
+# Network manager
+
+_run nm-applet
 
 
 # --- Workspaces ---
